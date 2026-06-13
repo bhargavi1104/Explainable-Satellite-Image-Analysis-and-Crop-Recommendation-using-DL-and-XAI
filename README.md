@@ -85,7 +85,7 @@ Instead of only focusing on predictions, we wanted the system to show why a part
 5. Suitable crops are suggested with explainable reasoning.
 
 6. Users can view predictions, insights, and download reports.
-7. 
+
 
 ## 📚 What I Learned
 
