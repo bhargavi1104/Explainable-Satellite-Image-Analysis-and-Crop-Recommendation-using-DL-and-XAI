@@ -1,0 +1,797 @@
+{% extends 'home.html' %}
+{% block content %}
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    /* ===== BACKGROUNDS — same as register.html ===== */
+    .pred-upload-bg,
+    .pred-results-bg {
+        background:
+            linear-gradient(rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.65)),
+            url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400") no-repeat center center;
+        background-size: cover;
+        background-attachment: fixed;
+        min-height: 90vh;
+        padding-bottom: 40px;
+    }
+
+    /* ===== TITLE BANNER — taller, but font reduced slightly ===== */
+    .pred-title-banner {
+        background: rgba(15, 27, 109, 0.94);
+        color: #fff;
+        text-align: center;
+        padding: 14px 0 13px;
+    }
+
+    .pred-title-banner h5 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+    }
+
+    /* ===== UPLOAD CARD ===== */
+    .upload-hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 50px 20px 30px;
+        text-align: center;
+    }
+
+    .upload-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(15, 27, 109, 0.22);
+        padding: 28px 40px 24px;
+        width: 100%;
+        max-width: 460px;
+        border: 2px dashed #b0bde8;
+        transition: border-color 0.2s;
+    }
+
+    .upload-card:hover {
+        border-color: #0f1b6d;
+    }
+
+    .upload-icon-big {
+        font-size: 2.8rem;
+        color: #0f1b6d;
+        margin-bottom: 8px;
+    }
+
+    .upload-card .upload-title {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #0f1b6d;
+        margin-bottom: 4px;
+    }
+
+    .upload-card .upload-hint {
+        font-size: 0.85rem;
+        color: #777;
+        margin-bottom: 12px;
+    }
+
+    .file-input-styled {
+        display: block;
+        width: 100%;
+        padding: 9px 12px;
+        border: 1.5px solid #c0c7e0;
+        border-radius: 8px;
+        font-size: 0.90rem;
+        background: #fcfcff;
+        cursor: pointer;
+        margin-bottom: 15px;
+    }
+
+    .btn-analyze {
+        background: #0f1b6d;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 0;
+        font-size: 1.02rem;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-analyze:hover {
+        background: #1a2fa0;
+        transform: translateY(-2px);
+    }
+
+    /* ===== SECTION DIVIDER ===== */
+    .section-divider {
+        border: none;
+        border-top: 2px solid #e0e4f0;
+        margin: 24px 0 20px;
+    }
+
+    /* ===== IMAGE RESULT CARDS — slightly larger than initial, but balanced ===== */
+    .images-row {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
+
+    .img-result-card {
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 5px 18px rgba(0, 0, 0, 0.12);
+        overflow: hidden;
+        width: 310px;
+        flex-shrink: 0;
+    }
+
+    .img-result-header {
+        background: #0f1b6d;
+        color: #fff;
+        padding: 10px 16px;
+        font-size: 0.92rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .img-result-header.green {
+        background: #28a745;
+    }
+
+    .img-result-card img {
+        width: 100%;
+        height: 210px;
+        object-fit: contain;
+        background: #f9fbfd;
+        padding: 10px;
+    }
+
+    /* ===== DETECTION SUMMARY — sticker style below images ===== */
+    .det-summary-bar {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 5px 20px rgba(15, 27, 109, 0.11);
+        padding: 16px 24px;
+        margin-bottom: 26px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        border-left: 6px solid #0f1b6d;
+    }
+
+    .det-bar-label {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #0f1b6d;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        white-space: nowrap;
+    }
+
+    .det-sticker {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #f4f6ff;
+        border: 2px solid #d0d8f8;
+        border-radius: 14px;
+        padding: 10px 16px;
+        min-width: 85px;
+        position: relative;
+    }
+
+    .det-sticker .sticker-emoji {
+        font-size: 2.1rem;
+        line-height: 1.1;
+    }
+
+    .det-sticker .sticker-count {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background: #0f1b6d;
+        color: #fff;
+        font-size: 0.78rem;
+        font-weight: 950;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid #fff;
+    }
+
+    .det-sticker .sticker-label {
+        font-size: 0.70rem;
+        font-weight: 700;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        margin-top: 5px;
+    }
+
+    .season-badge {
+        margin-left: auto;
+        background: #d4edda;
+        color: #155724;
+        border-radius: 50px;
+        padding: 6px 18px;
+        font-size: 0.82rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    /* ===== XAI RECOMMENDATION CARDS — slightly reduced font as requested ===== */
+    .xai-section-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #0f1b6d;
+        margin-bottom: 5px;
+    }
+
+    .xai-section-sub {
+        color: #666;
+        font-size: 0.90rem;
+        margin-bottom: 18px;
+    }
+
+    .xai-card {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        padding: 16px 20px;
+        margin-bottom: 18px;
+        border-left: 6px solid #0f1b6d;
+        transition: transform 0.2s;
+        animation: fadeInUp 0.4s ease forwards;
+        opacity: 0;
+    }
+
+    .xai-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .xai-card.high {
+        border-left-color: #28a745;
+    }
+
+    .xai-card.medium {
+        border-left-color: #ffc107;
+    }
+
+    .xai-card.low {
+        border-left-color: #17a2b8;
+    }
+
+    .xai-card .land-type {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #888;
+        margin-bottom: 3px;
+    }
+
+    .xai-card .crop-name {
+        font-size: 1.20rem;
+        font-weight: 800;
+        color: #0f1b6d;
+        margin-bottom: 6px;
+    }
+
+    .xai-card .crop-reason {
+        font-size: 1.0rem;
+        color: #444;
+        margin-bottom: 10px;
+        line-height: 1.5;
+    }
+
+    .confidence-bar-wrap {
+        background: #f0f0f0;
+        border-radius: 10px;
+        height: 6px;
+        margin-bottom: 10px;
+    }
+
+    .confidence-bar-fill {
+        height: 6px;
+        border-radius: 10px;
+    }
+
+    .btn-details-toggle {
+        font-size: 0.75rem;
+        color: #0f1b6d;
+        border: 1.5px solid #0f1b6d;
+        border-radius: 6px;
+        padding: 3px 12px;
+        background: transparent;
+        cursor: pointer;
+        font-weight: 700;
+    }
+
+    .btn-details-toggle:hover {
+        background: #0f1b6d;
+        color: #fff;
+    }
+
+    .details-collapse {
+        background: #fafaff;
+        border-radius: 10px;
+        padding: 15px;
+        margin-top: 12px;
+        font-size: 0.88rem;
+        color: #333;
+        border: 1px solid #eee;
+    }
+
+    .details-collapse p {
+        margin-bottom: 6px;
+    }
+
+    /* ===== TRY ANOTHER IMAGE — reduced height ===== */
+    .try-another-section {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(15, 27, 109, 0.15);
+        padding: 24px 30px 20px;
+        text-align: center;
+        margin-top: 36px;
+        border-top: 5px solid #0f1b6d;
+        max-width: 440px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .try-another-section .try-icon {
+        font-size: 2.22rem;
+        color: #0f1b6d;
+        margin-bottom: 6px;
+    }
+
+    .try-another-section h5 {
+        font-size: 1.05rem;
+        font-weight: 850;
+        color: #0f1b6d;
+        margin-bottom: 4px;
+    }
+
+    .try-another-section p {
+        font-size: 0.85rem;
+        color: #777;
+        margin-bottom: 16px;
+    }
+
+    .btn-try-another {
+        background: #0f1b6d;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 0;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-try-another:hover {
+        background: #1a2fa0;
+        transform: translateY(-3px);
+    }
+
+    /* ===== DOWNLOAD PDF BUTTON STYLING (REFINED & COMPACT) ===== */
+    .btn-download-pdf {
+        display: inline-block !important;
+        background: linear-gradient(135deg, #198754, #146c43) !important;
+        /* Success Green */
+        color: #fff !important;
+        padding: 8px 24px !important;
+        /* Reduced padding */
+        border-radius: 50px !important;
+        font-weight: 800 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.8px !important;
+        font-size: 0.82rem !important;
+        /* Smaller font */
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 15px rgba(25, 135, 84, 0.2) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .btn-download-pdf:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(25, 135, 84, 0.3) !important;
+        background: linear-gradient(135deg, #146c43, #198754) !important;
+    }
+
+    .btn-download-pdf i {
+        font-size: 1rem;
+    }
+
+    /* ===== MANDI TRACKER SECTION ===== */
+    .mandi-section {
+        margin-top: 30px;
+        padding-top: 10px;
+        width: 100%;
+    }
+
+    .mandi-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 5px 0 15px;
+    }
+
+    .mandi-card {
+        background: linear-gradient(135deg, #ffffff, #f9faff);
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        flex: 1 1 calc(33.333% - 20px);
+        min-width: 280px;
+        box-shadow: 0 4px 12px rgba(15, 27, 109, 0.06);
+        border-bottom: 5px solid #0f1b6d;
+        transition: transform 0.2s;
+    }
+
+    .mandi-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .mandi-card .crop-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #888;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .mandi-card .crop-value {
+        font-size: 1.15rem;
+        font-weight: 800;
+        color: #0f1b6d;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 6px;
+    }
+
+    .mandi-card .price-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .mandi-card .price-box {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mandi-card .price-amt {
+        font-size: 1.4rem;
+        font-weight: 900;
+        color: #198754;
+    }
+
+    .mandi-card .price-note {
+        font-size: 0.7rem;
+        color: #666;
+        font-weight: 600;
+    }
+
+    .mandi-card .trend-tag {
+        font-size: 0.75rem;
+        font-weight: 800;
+        padding: 4px 10px;
+        border-radius: 6px;
+        text-transform: uppercase;
+    }
+
+    .mandi-card .harvest-projection {
+        background: #f4f8ff;
+        border-radius: 8px;
+        padding: 8px 12px;
+        margin-top: 5px;
+        border-left: 4px solid #0d6efd;
+    }
+
+    .harvest-projection .h-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #0d6efd;
+        margin-bottom: 2px;
+    }
+
+    .harvest-projection .h-amt {
+        font-size: 1.15rem;
+        font-weight: 900;
+        color: #0f1b6d;
+    }
+
+    .trend-tag.up {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .trend-tag.down {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .trend-tag.stable {
+        background: #e2e3e5;
+        color: #41464b;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+{% if prediction %}
+<!-- ===== RESULTS PAGE — slider-bg with more transparency used ===== -->
+<div class="pred-results-bg">
+    {% else %}
+    <!-- ===== UPLOAD PAGE — bg.png image kept original ===== -->
+    <div class="pred-upload-bg">
+        {% endif %}
+
+        <!-- Taller Title Banner, Font slightly reduced -->
+        <div class="pred-title-banner">
+            <h5>Explainable Satellite Image Analysis &amp; Intelligent Crop Recommendation Using Deep Learning and XAI
+            </h5>
+        </div>
+
+        <div class="container py-4">
+
+            {% if error %}
+            <div class="alert alert-danger text-center"
+                style="border-radius:12px; font-weight:600; font-size:0.95rem; margin-bottom:25px; box-shadow: 0 4px 12px rgba(220,53,69,0.15);">
+                <i class="fas fa-exclamation-triangle me-2"></i>{{ error }}
+            </div>
+            {% endif %}
+
+            <!-- ===== UPLOAD HERO (when no prediction) ===== -->
+            {% if not prediction %}
+            <div class="upload-hero">
+                <div class="upload-card">
+                    <div class="upload-icon-big"><i class="fas fa-satellite"></i></div>
+                    <div class="upload-title">{{ _t('upload_title') }}</div>
+                    <div class="upload-hint">{{ _t('upload_hint') }}</div>
+                    <form action="{{ url_for('prediction') }}" method="post" enctype="multipart/form-data">
+                        <input type="file" class="file-input-styled" name="file" id="fileInputMain" accept="image/*"
+                            required />
+                        
+
+
+                        <button type="submit" class="btn-analyze">
+                            <i class="fas fa-magic me-2"></i>{{ _t('btn_analyze') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ===== RESULTS (when prediction exists) ===== -->
+            {% if prediction %}
+
+
+            <!-- 1. Original + AI Images (Top) -->
+            <div class="images-row">
+                <div class="img-result-card">
+                    <div class="img-result-header"><i class="fas fa-image"></i> {{ _t('original_image') }}</div>
+                    <img src="{{ url_for('static', filename='saved_images/' + file_name) }}" alt="Original" />
+                </div>
+                <div class="img-result-card">
+                    <div class="img-result-header green"><i class="fas fa-robot"></i> {{ _t('ai_analysis') }}</div>
+                    <img src="{{ url_for('static', filename='predicted_images/' + prediction_image) }}"
+                        alt="AI Result" />
+                </div>
+            </div>
+
+            <hr class="section-divider">
+
+            <!-- 2. Detection Stickers (Middle) -->
+            {% if class_counts %}
+            <div class="det-summary-bar">
+                <span class="det-bar-label"><i class="fas fa-search me-1"></i>{{ _t('objects_detected') }}</span>
+                {% for class_name, count in class_counts.items() %}
+                {% set key = class_name|lower %}
+                <div class="det-sticker">
+                    <span class="sticker-count">{{ count }}</span>
+                    <span class="sticker-emoji">
+                        {% if 'agri' in key %}🌾
+                        {% elif 'water' in key %}💧
+                        {% elif 'build' in key or 'urban' in key %}🏢
+                        {% elif 'forest' in key %}🌲
+                        {% elif 'road' in key %}🛣️
+                        {% else %}🟫{% endif %}
+                    </span>
+                    <span class="sticker-label">{{ _t(class_name|lower) }}</span>
+                </div>
+                {% endfor %}
+                {% if current_season %}
+                <span class="season-badge"><i class="fas fa-sun me-1"></i>{{ current_season }} {{ _t('season') }}</span>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <hr class="section-divider">
+
+            <!-- 3. XAI Crop Recommendations (Bottom) -->
+            {% if xai_recommendations %}
+            <div class="xai-section-title">
+                <i class="fas fa-seedling me-1" style="color:#28a745;"></i>{{ _t('recommendations_title') }}
+                {% if current_season %}
+                <span style="font-size:0.85rem; color:#28a745; font-weight:700; margin-left:10px;">· {{ current_season
+                    }} {{ _t('season') }}</span>
+                {% endif %}
+            </div>
+            <div class="xai-section-sub"><b>{{ _t('recommendations_sub') }}</b>
+            </div>
+            <div class="row">
+                {% for item in xai_recommendations %}
+                <div class="col-md-6">
+                    <div
+                        class="xai-card {% if item.confidence_score >= 0.9 %}high{% elif item.confidence_score >= 0.7 %}medium{% else %}low{% endif %}">
+                        <div class="d-flex align-items-start gap-4">
+                            <div style="font-size:2rem; line-height:1; flex-shrink:0;">{{ item.icon }}</div>
+                             <div style="flex:1; min-width:0;">
+                                <div class="land-type">{{ item.detected_land_type_translated }}</div>
+                                <div class="crop-name">{{ item.primary_recommendation_translated }}</div>
+                                <div class="crop-reason">{{ _t(item.explanations.primary) }}</div>
+                                <div class="confidence-bar-wrap">
+                                    <div class="confidence-bar-fill {% if item.confidence_score >= 0.9 %}bg-success{% elif item.confidence_score >= 0.7 %}bg-warning{% else %}bg-info{% endif %}"
+                                        style="width:{{ (item.confidence_score*100)|round(0) }}%;"></div>
+                                </div>
+                                <button class="btn-details-toggle" data-bs-toggle="collapse"
+                                    data-bs-target="#xai{{ loop.index }}">
+                                    {{ _t('more_details') }} <i class="fas fa-chevron-down ms-1"></i>
+                                </button>
+                                <div class="collapse details-collapse" id="xai{{ loop.index }}">
+                                    <p><strong>{{ _t('scientific_exp') }}:</strong> {{ _t(item.explanations.scientific) }}</p>
+                                    <p><strong>{{ _t('economic_val') }}:</strong> {{ _t(item.explanations.economic) }}</p>
+                                    <p><strong>{{ _t('sustainability') }}:</strong> {{ _t(item.explanations.sustainability) }}
+                                    </p>
+                                    <p><strong>{{ _t('risks') }}:</strong> {{ _t(item.explanations.risks) }}</p>
+                                    {% if item.implementation_steps_translated %}
+                                    <hr style="margin:10px 0;">
+                                    <p><strong>{{ _t('steps') }}:</strong></p>
+                                    <ul style="margin-top:8px; padding-left:22px; font-size:0.90rem;">
+                                        {% for step in item.implementation_steps_translated %}<li>{{ step }}</li>{% endfor %}
+                                    </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- 4. LIVE MANDI TRACKER (New Feature) -->
+            {% if xai_recommendations %}
+            <div class="mandi-section">
+                <div class="xai-section-title">
+                    <i class="fas fa-chart-line me-1" style="color:#0f1b6d;"></i>{{ _t('mandi_insights') }}
+                </div>
+                <div class="xai-section-sub"><b>{{ _t('mandi_sub') }}</b></div>
+
+
+                <div class="mandi-grid">
+                    {% for item in xai_recommendations %}
+                    <div class="mandi-card">
+                        <div class="crop-label">
+                            <span>{{ _t('mandi_value') }}</span>
+                            <span class="trend-tag {{ item.market_trend }}">
+                                {% if item.market_trend == 'up' %}
+                                <i class="fas fa-arrow-up me-1"></i>{{ _t('trend_up') }}
+                                {% elif item.market_trend == 'down' %}
+                                <i class="fas fa-arrow-down me-1"></i>{{ _t('trend_down') }}
+                                {% else %}
+                                <i class="fas fa-minus me-1"></i>{{ _t('trend_stable') }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="crop-value">{{ item.primary_recommendation_translated }}</div>
+
+                        <div class="price-row">
+                            <div class="price-box">
+                                <span class="price-amt">{{ item.market_price }}</span>
+                                <span class="price-note">{{ _t('rate_quintal') }}</span>
+                            </div>
+                        </div>
+
+                        <div class="harvest-projection">
+                            <div class="h-label"><i class="fas fa-calendar-check me-1"></i>{{ _t('expected_harvest') }}
+                            </div>
+                            <div class="h-amt">{{ item.market_harvest }}</div>
+                            <div style="font-size: 0.65rem; color: #666; margin-top: 4px;">
+                                <i class="fas fa-info-circle me-1"></i>{{ _t('expected_harvest_note') }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+
+            {% if prediction and not xai_recommendations %}
+            <div class="alert alert-warning text-center"
+                style="border-radius:12px; font-size:1rem; font-weight:750; box-shadow: 0 4px 12px rgba(255,193,7,0.15);">
+                <i class="fas fa-search me-2"></i>The analysis did not yield specific crop recommendations. Try a
+                different image.
+            </div>
+            {% endif %}
+
+
+
+
+
+
+            <!-- ANALYZE NEW AREA BOX (Try Another) — Reduced height as requested -->
+            <div class="try-another-section">
+                <div class="try-icon"><i class="fas fa-redo-alt"></i></div>
+                <h5>{{ _t('analyze_new') }}</h5>
+
+                <form action="{{ url_for('prediction') }}" method="post" enctype="multipart/form-data">
+                    <input type="file" class="file-input-styled" name="file" id="fileInputRetry" accept="image/*"
+                        required />
+                    <button type="submit" class="btn-try-another">
+                        <i class="fas fa-magic me-2"></i>{{ _t('btn_analyze') }}
+                    </button>
+                </form>
+            </div>
+
+            <!-- DOWNLOAD REPORT BUTTON (VERY BOTTOM) -->
+            <div class="row mt-5 mb-4">
+                <div class="col-md-12 text-end">
+                    <a href="{{ url_for('download_report') }}" class="btn-download-pdf">
+                        <i class="fas fa-file-pdf me-2"></i>{{ _t('download_report') }}
+                    </a>
+                </div>
+            </div>
+
+
+            {% endif %}
+
+        </div>
+    </div>
+
+    <script>
+        ['fileInputMain', 'fileInputRetry'].forEach(function (id) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('change', function () {
+                if (this.files && this.files[0] && this.files[0].size > 10 * 1024 * 1024) {
+                    alert('File too large (MAX 10MB). Please select a smaller file.');
+                    this.value = '';
+                }
+            });
+        });
+    </script>
+
+    {% endblock %}

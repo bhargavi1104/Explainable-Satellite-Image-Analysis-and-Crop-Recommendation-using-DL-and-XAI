@@ -1,0 +1,147 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<style>
+  /* Same background as login/register pages */
+  .admin-login-wrapper {
+    background: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
+      url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400") no-repeat center center;
+    background-size: cover;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+  }
+
+  /* White form card centered */
+  .admin-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    padding: 30px 40px 28px;
+    width: 100%;
+    max-width: 450px;
+  }
+
+  .admin-card .page-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #444;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .admin-card .form-heading {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f1b6d;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  /* Inline LABEL : [box] layout */
+  .admin-card .form-group {
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .admin-card .form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #333;
+    min-width: 110px;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  /* Bordered box inputs */
+  .admin-card .form-control {
+    flex: 1;
+    height: 40px;
+    border: 1.5px solid #c0c7e0;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 0.88rem;
+    padding: 0 10px;
+    color: #222;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+
+  .admin-card .form-control:focus {
+    border-color: #0f1b6d;
+    box-shadow: 0 0 0 3px rgba(15, 27, 109, 0.12);
+    outline: none;
+  }
+
+  .admin-card .form-control::placeholder {
+    color: #bbb;
+    font-style: italic;
+  }
+
+  /* Blue Login button */
+  .btn-admin-login {
+    background-color: #0f1b6d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    height: 42px;
+    width: 100%;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-admin-login:hover {
+    background-color: #1a2fa0;
+  }
+
+  /* Error message */
+  .admin-error {
+    color: #dc2626;
+    font-size: 0.82rem;
+    text-align: center;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+</style>
+
+<div class="admin-login-wrapper">
+  <div class="admin-card">
+
+    <!-- Header -->
+    <p class="page-title">&#127807; AgroVision-XAI</p>
+    <h2 class="form-heading">Login As Admin</h2>
+
+    {% if error %}
+    <p class="admin-error">&#9888; {{ error }}</p>
+    {% endif %}
+
+    <form method="POST">
+
+      <!-- Username -->
+      <div class="form-group">
+        <label for="username">USERNAME :</label>
+        <input type="text" id="username" name="username" class="form-control" placeholder=" username" required />
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">PASSWORD :</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder=" password" required />
+      </div>
+
+      <button type="submit" class="btn-admin-login">Login as Admin</button>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

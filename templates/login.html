@@ -1,0 +1,218 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<style>
+  /* Same background as register page */
+  .login-wrapper {
+    background: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
+      url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400") no-repeat center center;
+    background-size: cover;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+  }
+
+  /* White form card centered */
+  .login-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    padding: 20px 20px 28px;
+    width: 100%;
+    max-width: 450px;
+  }
+
+  .login-card .page-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #444;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .login-card .form-heading {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f1b6d;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  /* Inline LABEL : [box] layout */
+  .login-card .form-group {
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .login-card .form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #333;
+    min-width: 110px;
+    /* Fixed label width so all boxes align */
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  /* Bordered box inputs — same as register */
+  .login-card .form-control {
+    flex: 1;
+    height: 40px;
+    border: 1.5px solid #c0c7e0;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 0.88rem;
+    padding: 0 10px;
+    color: #222;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+
+  .login-card .form-control:focus {
+    border-color: #0f1b6d;
+    box-shadow: 0 0 0 3px rgba(15, 27, 109, 0.12);
+    outline: none;
+  }
+
+  .login-card .form-control::placeholder {
+    color: #bbb;
+    font-style: italic;
+  }
+
+  .field-error-wrapper {
+    padding-left: 125px;
+    margin-top: -10px;
+    margin-bottom: 4px;
+  }
+
+  .field-error {
+    color: #dc2626;
+    font-size: 0.75rem;
+  }
+
+  /* Blue Login button */
+  .btn-login {
+    background-color: #0f1b6d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    height: 42px;
+    width: 100%;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-login:hover {
+    background-color: #1a2fa0;
+  }
+
+  /* "Are you new?" link in red */
+  .new-user-link {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 0.83rem;
+    color: #555;
+  }
+
+  .new-user-link a {
+    color: #dc2626;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .new-user-link a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="login-wrapper">
+  <div class="login-card">
+
+    <!-- Teaser header -->
+    <p class="page-title">&#127807; AgroVision-XAI</p>
+    <h2 class="form-heading">{{ _t('login_title') }}</h2>
+
+    <form id="loginForm" action="{{url_for('login')}}" method="POST">
+
+      <!-- Name -->
+      <div class="form-group">
+        <label for="name">{{ _t('name') }} :</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="{{ _t('name')|lower }}" required />
+      </div>
+      <div class="field-error-wrapper">
+        <div id="nameError" class="field-error"></div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">{{ _t('email') }} :</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required />
+      </div>
+      <div class="field-error-wrapper">
+        <div id="emailError" class="field-error"></div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">{{ _t('password') }} :</label>
+        <input type="password" id="password" name="password" class="form-control" placeholder="{{ _t('password')|lower }}"
+          required />
+      </div>
+
+      <div class="field-error-wrapper">
+        <div id="passwordError" class="field-error"></div>
+      </div>
+
+      <button type="submit" class="btn-login">{{ _t('btn_login') }}</button>
+    </form>
+
+    <!-- New user link -->
+    <div class="new-user-link">
+      <b>{{ _t('new_user') }}</b>
+      <a href="{{ url_for('register') }}">{{ _t('register_here') }}</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    let isValid = true;
+
+    const name = document.getElementById('name').value.trim();
+    const nameError = document.getElementById('nameError');
+    if (!name || !/^[A-Za-z\s]+$/.test(name)) {
+      nameError.textContent = 'Name must contain only alphabetic characters.';
+      isValid = false;
+    } else { nameError.textContent = ''; }
+
+    const email = document.getElementById('email').value.trim();
+    const emailError = document.getElementById('emailError');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      emailError.textContent = 'Please enter a valid email address.';
+      isValid = false;
+    } else { emailError.textContent = ''; }
+
+    const password = document.getElementById('password').value.trim();
+    const passwordError = document.getElementById('passwordError');
+    if (!password) {
+      passwordError.textContent = 'Password is required.';
+      isValid = false;
+    } else { passwordError.textContent = ''; }
+
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,255 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<style>
+  /* Full-page background like about.html */
+  .register-wrapper {
+    background: linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
+      url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1400") no-repeat center center;
+    background-size: cover;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+  }
+
+  /* White form card centered */
+  .register-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    padding: 20px 40px 28px;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .register-card .page-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #444;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .register-card .form-heading {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #0f1b6d;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  /* Uniform height & width for all input fields */
+  /* Inline label : [box] layout  — Name : [_________] */
+  .register-card .form-group {
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .register-card .form-group label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #333;
+    min-width: 110px;
+    /* Fixed label width so all boxes align */
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  /* Proper bordered box input */
+  .register-card .form-control {
+    flex: 1;
+    height: 40px;
+    border: 1.5px solid #c0c7e0;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 0.88rem;
+    padding: 0 10px;
+    color: #222;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+
+  .register-card .form-control:focus {
+    border-color: #0f1b6d;
+    box-shadow: 0 0 0 3px rgba(15, 27, 109, 0.12);
+    outline: none;
+  }
+
+  .register-card .form-control::placeholder {
+    color: #bbb;
+    font-style: italic;
+  }
+
+  .field-error-wrapper {
+    padding-left: 120px;
+    margin-top: -10px;
+    margin-bottom: 4px;
+  }
+
+  /* Blue Register button */
+  .btn-register {
+    background-color: #0f1b6d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    height: 42px;
+    width: 100%;
+
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-top: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-register:hover {
+    background-color: #1a2fa0;
+  }
+
+  /* "Already have an account" link in red */
+  .already-account {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 0.83rem;
+    color: #555;
+  }
+
+  .already-account a {
+    color: #dc2626;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .already-account a:hover {
+    text-decoration: underline;
+  }
+
+  .field-error {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+</style>
+
+<div class="register-wrapper">
+  <div class="register-card">
+
+    <!-- Teaser header -->
+    <p class="page-title">&#127807; AgroVision-XAI</p>
+    <h2 class="form-heading">{{ _t('register_title') }}</h2>
+
+    <form id="registerForm" action="{{url_for('register')}}" method="POST">
+
+      <!-- Name -->
+      <div class="form-group">
+        <label for="name">{{ _t('name') }} :</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="{{ _t('name')|lower }}" required />
+      </div>
+      <div class="field-error-wrapper">
+        <div id="nameError" class="field-error"></div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">{{ _t('email') }} :</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="you@example.com" required />
+      </div>
+      <div class="field-error-wrapper">
+        <div id="emailError" class="field-error"></div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">{{ _t('password') }} :</label>
+        <input type="password" id="password" name="password" class="form-control"
+          placeholder="min 8 chars, 1 uppercase, 1 number" required minlength="8" />
+      </div>
+      <div class="field-error-wrapper">
+        <div id="passwordError" class="field-error"></div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="c_password">{{ _t('confirm_password') }}:</label>
+        <input type="password" id="c_password" name="c_password" class="form-control"
+          placeholder="{{ _t('confirm_password')|lower }}" required />
+      </div>
+      <div class="field-error-wrapper">
+        <div id="cPasswordError" class="field-error"></div>
+      </div>
+
+      <!-- Phone -->
+      <div class="form-group">
+        <label for="phone">{{ _t('phone') }}:</label>
+        <input type="tel" id="phone" name="phone" class="form-control" placeholder="10-digit mobile number" required
+          pattern="^\d{10}$" />
+      </div>
+
+      <div class="field-error-wrapper">
+        <div id="phoneError" class="field-error"></div>
+      </div>
+
+      <button type="submit" class="btn-register">{{ _t('btn_register') }}</button>
+    </form>
+
+    <!-- Already have an account -->
+    <div class="already-account">
+      <b>{{ _t('already_user') }}</b>
+      <a href="{{ url_for('login') }}">{{ _t('login_here') }}</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.getElementById('registerForm').addEventListener('submit', function (e) {
+    let isValid = true;
+
+    const name = document.getElementById('name').value.trim();
+    const nameError = document.getElementById('nameError');
+    if (!name || !/^[A-Za-z\s]+$/.test(name)) {
+      nameError.textContent = 'Name must contain only alphabetic characters.';
+      isValid = false;
+    } else { nameError.textContent = ''; }
+
+    const email = document.getElementById('email').value.trim();
+    const emailError = document.getElementById('emailError');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      emailError.textContent = 'Please enter a valid email address.';
+      isValid = false;
+    } else { emailError.textContent = ''; }
+
+    const password = document.getElementById('password').value.trim();
+    const passwordError = document.getElementById('passwordError');
+    if (!password || !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
+      passwordError.textContent = 'Min 8 chars, one uppercase, one lowercase, one number.';
+      isValid = false;
+    } else { passwordError.textContent = ''; }
+
+    const confirmPassword = document.getElementById('c_password').value.trim();
+    const cPasswordError = document.getElementById('cPasswordError');
+    if (confirmPassword !== password) {
+      cPasswordError.textContent = 'Passwords do not match.';
+      isValid = false;
+    } else { cPasswordError.textContent = ''; }
+
+    const phone = document.getElementById('phone').value.trim();
+    const phoneError = document.getElementById('phoneError');
+    if (!phone || !/^\d{10}$/.test(phone)) {
+      phoneError.textContent = 'Please enter a valid 10-digit phone number.';
+      isValid = false;
+    } else { phoneError.textContent = ''; }
+
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+</script>
+
+{% endblock %}

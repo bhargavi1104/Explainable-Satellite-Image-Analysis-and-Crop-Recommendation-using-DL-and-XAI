@@ -1,0 +1,200 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<!-- Google Font for title -->
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+
+<!-- Custom Styles for About Page -->
+<style>
+  .about-wrapper {
+    /* Even more visible background - lowered white opacity to 30% */
+    background: linear-gradient(rgba(255, 255, 255, 0.831), rgba(255, 255, 255, 0.30)),
+      url("https://media.istockphoto.com/id/510062901/photo/ship-launch.jpg?s=612x612&w=0&k=20&c=pXZT3irXQB-52qszeNas_qE5jkMqKjrsQDgiuKqYHhU=") no-repeat center center;
+    background-size: cover;
+    min-height: 80vh;
+    padding: 22px 0 14px;
+    color: #333;
+  }
+
+  /* Elegant Playfair Display font for the main title */
+  .about-title {
+    font-family: 'calibri';
+    font-size: 2rem;
+    font-weight: 800;
+    color: #0f1b6d;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.95);
+  }
+
+  .about-subtitle {
+    text-align: center;
+    font-size: 0.88rem;
+    color: #222;
+    margin-bottom: 18px;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+  }
+
+  /* SQUARE cards — fixed width & height using aspect-ratio trick */
+  .how-it-works-card {
+    background: rgba(255, 255, 255, 0.90);
+    border: 1px solid rgba(15, 27, 109, 0.15);
+    border-radius: 12px;
+    box-shadow: 0 3px 14px rgba(0, 0, 0, 0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    /* Cap card size to make them small squares */
+    aspect-ratio: 1 / 1;
+    /* Makes it a perfect square */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .how-it-works-card:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
+  }
+
+  .step-icon {
+    font-size: 2.2rem;
+    color: #0f1b6d;
+    margin-bottom: 10px;
+  }
+
+  .how-it-works-card h4 {
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #0f1b6d;
+    padding: 0 12px;
+  }
+
+  .how-it-works-card p {
+    font-size: 0.90rem;
+    color: #444;
+    line-height: 1.4;
+    margin: 0;
+    padding: 0 14px;
+  }
+
+  /* === Compact Team Section === */
+  .team-section {
+    margin-top: 30px;
+    background: rgba(15, 27, 109, 0.85);
+    border-radius: 10px;
+    padding: 10px 20px;
+    /* Much reduced height */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .team-section-title {
+    font-size: 0.90rem;
+    font-weight: 700;
+    color: #d0e2efe2;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .team-members-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .team-pill {
+    background: lab(28.23% 69.98 -94.75 / 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 50px;
+    padding: 5px 14px;
+    color: #fff;
+    font-size: 0.90rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+  }
+
+  .team-pill:hover {
+    background: rgba(6, 153, 244, 0.436);
+  }
+
+  .team-pill .avatar {
+    width: 24px;
+    height: 24px;
+    background: rgba(0, 188, 245, 0.329);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 800;
+  }
+</style>
+
+<div class="about-wrapper">
+  <div class="container">
+
+    <!-- Title -->
+    <h2 class="about-title">{{ _t('how_works') }}</h2>
+    <p class="about-subtitle">{{ _t('about_subtitle') }}</p>
+
+    <!-- How It Works — Small Square Cards -->
+    <div class="row g-3 justify-content-center">
+      <div class="col-md-3">
+        <div class="how-it-works-card">
+          <div class="step-icon"><i class="fa fa-upload"></i></div>
+          <h4>{{ _t('step1_title') }}</h4>
+          <p>{{ _t('step1_desc') }}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="how-it-works-card">
+          <div class="step-icon"><i class="fa fa-cogs"></i></div>
+          <h4>{{ _t('step2_title') }}</h4>
+          <p>{{ _t('step2_desc') }}</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="how-it-works-card">
+          <div class="step-icon"><i class="fa fa-leaf"></i></div>
+          <h4>{{ _t('step3_title') }}</h4>
+          <p>{{ _t('step3_desc') }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team Section — Compact horizontal bar -->
+    <div class="team-section">
+      <p class="team-section-title">&#128101; {{ _t('developed_by') }}</p>
+      <div class="team-members-row">
+        <div class="team-pill">
+          <span class="avatar">BP</span>Bhargavi Posimsetti
+        </div>
+        <div class="team-pill">
+          <span class="avatar">YP</span>Yugandhar Pinnenti
+        </div>
+        <div class="team-pill">
+          <span class="avatar">YS</span>Yaswanth Seerla
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
